@@ -1,0 +1,20 @@
+service: aws-sync-notion-to-calendar
+
+plugins:
+  - serverless-plugin-typescript
+  - serverless-plugin-warmup
+  - serverless-dotenv-plugin
+  - serverless-offline
+
+provider:
+  name: aws
+  region: ap-northeast-2
+  runtime: nodejs16.x
+
+functions:
+  main:
+    handler: src/lambda.handler
+    events:
+      - http:
+          method: any
+          path: /
