@@ -8,7 +8,7 @@ import { ConfigService } from '@nestjs/config';
 export class AppService {
   constructor(private config: ConfigService) {}
 
-  async getHello(): Promise<any> {
+  async getCalendar(): Promise<any> {
     const notionSecretKey = this.config.get('NOTION_SECRET_KEY');
     const notionDatabaseId = this.config.get('NOTION_DATABASE_ID');
 
@@ -21,21 +21,36 @@ export class AppService {
 
       const events = response.results.map<any>(({ properties }: any) => {
         const { 이름, 날짜 } = properties;
-
         const { start, end } = 날짜['date'];
+
+        let startData = [
+          Number(dayjs(start).format('YYYY')),
+          Number(dayjs(start).format('MM')),
+          Number(dayjs(start).format('DD')),
+        ];
+
+        if (end) {
+          startData = [
+            ...startData,
+            Number(dayjs(start).format('HH')),
+            Number(dayjs(start).format('mm')),
+          ];
+        }
+
         const result = {
           title: 이름['title'][0].text.content,
-          start: [
-            Number(dayjs(start).format('YYYY')),
-            Number(dayjs(start).format('MM')),
-            Number(dayjs(start).format('DD')),
-          ],
+          start: startData,
         };
 
         if (end) {
-          result['duration'] = {
-            days: Number(dayjs(end).diff(dayjs(start), 'days')) + 1,
-          };
+          const date = Number(dayjs(end).diff(dayjs(start), 'minutes'));
+          let days = Math.floor(date / (60 * 24));
+          if (days > 0) days += 1;
+          const remainingDays = date % (60 * 24);
+          const hours = remainingDays / 60;
+          const minutes = remainingDays % 60;
+
+          result['duration'] = { days, hours, minutes };
         }
 
         return result;
