@@ -1,6 +1,6 @@
 {
   "name": "sync_notion_to_calendar",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "노션의 Calendar (database)를 외부 calendar에 연동합니다.",
   "author": "GennYoon (yoonwonyoul@webchemist.net)",
   "private": true,
