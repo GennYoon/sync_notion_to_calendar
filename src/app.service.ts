@@ -44,8 +44,7 @@ export class AppService {
 
         if (end) {
           const date = Number(dayjs(end).diff(dayjs(start), 'minutes'));
-          let days = Math.floor(date / (60 * 24));
-          if (days > 0) days += 1;
+          const days = Math.floor(date / (60 * 24));
           const remainingDays = date % (60 * 24);
           const hours = remainingDays / 60;
           const minutes = remainingDays % 60;
