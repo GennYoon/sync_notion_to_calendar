@@ -44,14 +44,13 @@ export class AppService {
 
         if (end) {
           const date = Number(dayjs(end).diff(dayjs(start), 'minutes'));
-          const minutes = date % 60;
-          let hour = date / 60;
-          const days = hour / 24 > 0 ? hour / 24 : 0;
-          hour = days % 24;
-          console.log(days, hour, minutes);
-          result['duration'] = {
-            days: Number(dayjs(end).diff(dayjs(start), 'days')) + 1,
-          };
+          let days = Math.floor(date / (60 * 24));
+          if (days > 0) days += 1;
+          const remainingDays = date % (60 * 24);
+          const hours = remainingDays / 60;
+          const minutes = remainingDays % 60;
+
+          result['duration'] = { days, hours, minutes };
         }
 
         return result;
