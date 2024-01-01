@@ -45,7 +45,7 @@ let AppService = class AppService {
     constructor(config) {
         this.config = config;
     }
-    async getHello() {
+    async getCalendar() {
         const notionSecretKey = this.config.get('NOTION_SECRET_KEY');
         const notionDatabaseId = this.config.get('NOTION_DATABASE_ID');
         try {
@@ -56,18 +56,29 @@ let AppService = class AppService {
             const events = response.results.map(({ properties }) => {
                 const { 이름, 날짜 } = properties;
                 const { start, end } = 날짜['date'];
+                let startData = [
+                    Number((0, dayjs_1.default)(start).format('YYYY')),
+                    Number((0, dayjs_1.default)(start).format('MM')),
+                    Number((0, dayjs_1.default)(start).format('DD')),
+                ];
+                if (end) {
+                    startData = [
+                        ...startData,
+                        Number((0, dayjs_1.default)(start).format('HH')),
+                        Number((0, dayjs_1.default)(start).format('mm')),
+                    ];
+                }
                 const result = {
                     title: 이름['title'][0].text.content,
-                    start: [
-                        Number((0, dayjs_1.default)(start).format('YYYY')),
-                        Number((0, dayjs_1.default)(start).format('MM')),
-                        Number((0, dayjs_1.default)(start).format('DD')),
-                    ],
+                    start: startData,
                 };
                 if (end) {
-                    result['duration'] = {
-                        days: Number((0, dayjs_1.default)(end).diff((0, dayjs_1.default)(start), 'days')) + 1,
-                    };
+                    const date = Number((0, dayjs_1.default)(end).diff((0, dayjs_1.default)(start), 'minutes'));
+                    const days = Math.floor(date / (60 * 24));
+                    const remainingDays = date % (60 * 24);
+                    const hours = remainingDays / 60;
+                    const minutes = remainingDays % 60;
+                    result['duration'] = { days, hours, minutes };
                 }
                 return result;
             });

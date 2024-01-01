@@ -17,7 +17,7 @@ let AppController = class AppController {
         this.appService = appService;
     }
     getHello() {
-        return this.appService.getHello();
+        return this.appService.getCalendar();
     }
 };
 exports.AppController = AppController;
