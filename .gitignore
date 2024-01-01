@@ -39,3 +39,4 @@ lerna-debug.log*
 
 # Serverless
 .serverless
+.build
